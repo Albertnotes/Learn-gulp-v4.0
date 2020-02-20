@@ -18,12 +18,12 @@ const $ = require('gulp-load-plugins')();
 
 function copy() {
   return gulp
-    .src(
+    .src([
       './source/**/**',
-      '!source/**.pug',
+      '!source/*.pug',
       '!source/scss/**/**',
       '!source/javascript/**/**'
-    )
+    ])
     .pipe(gulp.dest('./public'))
     .pipe(
       $.if(
@@ -55,17 +55,17 @@ function clean() {
 
 function pug() {
   return gulp
-    .src(['./source/**/!(_)*.pug'])
+    .src('./source/**/!(_)*.pug')
     .pipe($.plumber())
     .pipe(
       $.data(function() {
-        const json = require('../source/data/data.json');
+        // const json = require('../source/data/data.json');
         const menus = require('../source/data/menu.json');
         const source = {
-          data: json,
+          // data: json,
           menus: menus
         };
-        console.log('pug', source);
+        console.log(menus);
         return source;
       })
     )
@@ -78,7 +78,6 @@ function pug() {
     );
 }
 
-exports.pug = pug;
 /*****************************************************
  * CSS 處理 block
  *****************************************************/
@@ -167,17 +166,23 @@ function imageMin() {
  *  伺服器監聽 block
  *****************************************************/
 
-function browser() {
+function browserWatch() {
   browserSync.init({
     server: {
       baseDir: './public',
       reloadDebounce: 2000
     }
   });
-}
-
-function watch() {
-  gulp.watch(['./source/**/*.html'], gulp.series('copyHTML'));
+  gulp.watch(
+    [
+      './source/**/**',
+      '!source/**/*.pug',
+      '!source/scss/**/**',
+      '!source/javascript/**/**'
+    ],
+    gulp.series('copy')
+  );
+  gulp.watch('./source/**/*.pug', gulp.series('pug'));
   gulp.watch(
     ['./source/scss/**/*.sass', './source/scss/**/*.scss'],
     gulp.series('scss')
@@ -198,9 +203,13 @@ function deploy() {
  *  指令 block
  *****************************************************/
 
-exports.clean = clean;
 exports.deploy = deploy;
+exports.copy = copy;
+exports.clean = clean;
 exports.copyBsVar = copyBsVar;
+exports.pug = pug;
+exports.scss = scss;
+exports.babel = babel;
 
 exports.build = gulp.series(
   gulp.series(clean, copy),
@@ -211,5 +220,5 @@ exports.build = gulp.series(
 exports.default = gulp.series(
   copy,
   gulp.parallel(pug, babel, scss),
-  gulp.series(vendorJS, imageMin, browser, watch)
+  gulp.series(vendorJS, imageMin, browserWatch)
 );
