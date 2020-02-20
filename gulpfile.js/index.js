@@ -22,7 +22,7 @@ function copy() {
       './source/**/**',
       '!source/*.pug',
       '!source/scss/**/**',
-      '!source/javascript/**/**'
+      '!source/javascripts/**/**'
     ])
     .pipe(gulp.dest('./public'))
     .pipe(
@@ -65,7 +65,7 @@ function pug() {
           // data: json,
           menus: menus
         };
-        console.log(menus);
+        // console.log(menus);
         return source;
       })
     )
@@ -127,6 +127,16 @@ function babel() {
         $.babel({
           presets: ['@babel/env']
         })
+      )
+      .pipe(
+        // 依 MVC 設計模式排序
+        $.order([
+          'javascripts/variable.js',
+          'javascripts/Model.js',
+          'javascripts/view.js',
+          'javascripts/controller.js',
+          'javascripts/**/*.js'
+        ])
       )
       .pipe($.concat('all.js'))
       .pipe(
@@ -218,6 +228,7 @@ exports.build = gulp.series(
 );
 
 exports.default = gulp.series(
+  clean,
   copy,
   gulp.parallel(pug, babel, scss),
   gulp.series(vendorJS, imageMin, browserWatch)

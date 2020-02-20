@@ -1,15 +1,18 @@
-doctype html
-html
-  head
-    title 六角學院 gulp 範例頁面
-    meta(name="viewport" content="width=device-width, initial-scale=1")
-    link(href="images/favicon.ico" rel="shortcut icon")
-    meta(charset="UTF-8")
-    link(rel="stylesheet" href="stylesheets/all.css")
-  body
-    block navbar
+<!DOCTYPE html>
+html(lang="en")
+	head
+		meta(charset="UTF-8")
+		meta(name="viewport" content="width=device-width, initial-scale=1.0")
+		title 口罩地圖
+		link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css' integrity='sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS' crossorigin='anonymous')
+		link(rel="stylesheet" href="css/all.css")
+	body.container-fluid
+		block content
 
-    block content
-    include partials/_footer.pug
-    include partials/_scripts.pug
+		script(src="javascript/vendor.js")
+		script(src="javascript/all.js")
+
+
+
+
 
